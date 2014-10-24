@@ -19,14 +19,25 @@ public class QueryTest {
         final Query query = new Query(session);
 
         query.addToSet("test-pk", "test-value");
-        assertTableHasSize(1);
+        assertThatResultSetHasSize(1, "test_set_table");
 
         query.removeFromSet("test-pk", "test-value");
-        assertTableHasSize(1); // we've removed the value from the set, not the row in its entirety
+        assertThatResultSetHasSize(1, "test_set_table"); // we've removed the value from the set, not the row in its entirety
     }
 
-    private void assertTableHasSize(int expectedSize) {
-        final ResultSet resultAfterAdding = session.execute(QueryBuilder.select().from("test_table").where(eq("id_col", "test-pk")));
+    @Test
+    public void addsAndRemovesFromList() throws Exception {
+        final Query query = new Query(session);
+
+        query.addToList("test-pk", "test-value");
+        assertThatResultSetHasSize(1, "test_list_table");
+
+        query.removeFromList("test-pk", "test-value");
+        assertThatResultSetHasSize(1, "test_list_table"); // we've removed the value from the list, not the row in its entirety
+    }
+
+    private void assertThatResultSetHasSize(int expectedSize, String tableName) {
+        final ResultSet resultAfterAdding = session.execute(QueryBuilder.select().from(tableName).where(eq("id_col", "test-pk")));
         assertThat(resultAfterAdding.getAvailableWithoutFetching()).isEqualTo(expectedSize);
     }
 }

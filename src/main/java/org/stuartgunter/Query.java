@@ -17,14 +17,26 @@ public class Query {
     }
 
     public void addToSet(String id, String value) {
-        session.execute(QueryBuilder.update("test_table")
+        session.execute(QueryBuilder.update("test_set_table")
                 .with(add("set_col", value))
                 .where(eq("id_col", id)));
     }
 
     public void removeFromSet(String id, String value) {
-        session.execute(QueryBuilder.update("test_table")
+        session.execute(QueryBuilder.update("test_set_table")
                 .with(remove("set_col", value))
+                .where(eq("id_col", id)));
+    }
+
+    public void addToList(String id, String value) {
+        session.execute(QueryBuilder.update("test_list_table")
+                .with(add("list_col", value))
+                .where(eq("id_col", id)));
+    }
+
+    public void removeFromList(String id, String value) {
+        session.execute(QueryBuilder.update("test_list_table")
+                .with(remove("list_col", value))
                 .where(eq("id_col", id)));
     }
 }
