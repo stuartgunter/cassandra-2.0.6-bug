@@ -15,6 +15,14 @@ public class QueryTest {
     private final Session session = cluster.connect("test_ks");
 
     @Test
+    public void name() throws Exception {
+        // this is interesting... it seems you CANNOT insert an empty set in 2.0.6 which was possible in 2.0.5
+        session.execute("INSERT INTO test_set_table (id_col, set_col) VALUES ('some-identifier', {});");
+
+        assertThatResultSetHasSize(1, "test_set_table");
+    }
+
+    @Test
     public void addsAndRemovesFromSet() throws Exception {
         final Query query = new Query(session);
 
